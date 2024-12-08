@@ -1,45 +1,68 @@
 let email = "";
-const input = document.getElementById("email");
-const error = document.getElementById("error");
-var validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-error.style.color = "#FF5E5B";
+let password = "";
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const emailError = document.getElementById("emailError");
+const passwordError = document.getElementById("passwordError");
+emailError.style.color = "#FF5E5B";
+passwordError.style.color = "#FF5E5B";
+let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+let validPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Mínimo 8 caracteres, al menos una letra y un número
 
 const form = document.getElementById("stayUpdatedForm");
 
 document.getElementById("email").addEventListener("change", (event) => {
   email = event.target.value;
 });
+document.getElementById("password").addEventListener("change", (event) => {
+  password = event.target.value;
+});
 
 form.addEventListener("submit", function (event) {
-  console.log(event);
-  event.preventDefault();
-  var errorMessage = [];
-  console.log(email);
-  if (!email || !validEmail.test(email)) {
-    input.style.color = "#FF5E5B";
-    input.style.background = "#FFE0DF";
-    errorMessage.push("Valid email required");
-  } else {
-    input.style.removeProperty("color");
-    input.style.removeProperty("background");
-    errorMessage.pop();
+  event.preventDefault(); // Evita que el formulario se envíe
 
-    modal.classList.add("modal--show");
+  let emailErrorMessage = [];
+  let passwordErrorMessage = [];
+
+  // Validación del correo electrónico
+  if (!email || !validEmail.test(email)) {
+    emailInput.style.color = "#FF5E5B";
+    emailInput.style.background = "#FFE0DF";
+    emailErrorMessage.push("Email válido requerido");
+  } else {
+    emailInput.style.removeProperty("color");
+    emailInput.style.removeProperty("background");
   }
-  error.innerHTML = errorMessage.join(", ");
+
+  // Validación de la contraseña
+  if (!password || !validPassword.test(password)) {
+    passwordInput.style.color = "#FF5E5B";
+    passwordInput.style.background = "#FFE0DF";
+    passwordErrorMessage.push(
+      "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número."
+    );
+  } else {
+    passwordInput.style.removeProperty("color");
+    passwordInput.style.removeProperty("background");
+  }
+
+  // Mostrar errores
+  emailError.innerHTML = emailErrorMessage; // Muestra el error del email
+  passwordError.innerHTML = passwordErrorMessage; // Muestra el error de la contraseña
+
+  // Continuar si no hay errores
+  if (!emailErrorMessage && !passwordErrorMessage) {
+    modal.classList.add("modal--show"); // Muestra el modal si no hay errores
+  }
 });
 
 const openModal = document.querySelector(".subscribe");
 const modal = document.querySelector(".modal");
 const closeModal = document.querySelector("#dismiss");
 
-/* openModal.addEventListener("click", (e) => {
-  e.preventDefault();
-  modal.classList.add("modal--show");
-});*/
-
 closeModal.addEventListener("click", (e) => {
   e.preventDefault();
-  input.value = "";
+  emailInput.value = "";
+  passwordInput.value = "";
   modal.classList.remove("modal--show");
 });
